@@ -21,3 +21,17 @@ git config-- global user.name dwakeherrera
 git config-- global user.email deivid.wgh@gmail.com
 git config --global push.default simple
 
+20180914
+ Propuesta de instalar ubuntu 16.04 en VirtualBox, e instalar monodevelop en la máquina virtual.
+ Descarga del "conector" de mysql para .net desde la página oficial.
+
+ Al intentar conectar lanza una exception:
+  Host '127.0.0.1' is not allowed to connect to this MySQL server
+ Para arreglar el problema comentamos la línea del skip-name-resolve=1:
+  [mysqld]
+  ...
+  # skip-name-resolve=1
+ Ahora obtenemos otra exception:
+  The host localhost does not support SSL connections.
+ Para arreglar esto incluimos ssl-modle=none en la 'connection String':
+  "server=localhost;database=dbprueba;user=root;password=sistemas;ssl-mode=none"
