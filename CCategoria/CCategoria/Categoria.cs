@@ -13,7 +13,7 @@ namespace CCategoria
         }
 
 		public ulong Id {
-			get { return Id; }
+			get { return id; }
 			set { id = value; }
 		}
 
