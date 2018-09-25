@@ -7,16 +7,20 @@ using CCategoria;
 
 using System.Reflection;
 
-public partial class MainWindow : Gtk.Window
-{
-	public MainWindow() : base(Gtk.WindowType.Toplevel)
-	{
+public partial class MainWindow : Gtk.Window {
+	private IDbConnection dbConnection;
+	public MainWindow() : base(Gtk.WindowType.Toplevel) {
 		Build();
 
-		IDbConnection dbConnection = new MySqlConnection(
+		dbConnection = new MySqlConnection(
 				"server=localhost;database=dbprueba;user=root;password=sistemas;ssl-mode=none"
 			);
-		dbConnection.Open();      
+		dbConnection.Open();
+
+		//insert();
+		//update();
+		update(new Categoria(3, "categoria 3 " + DateTime.Now));
+		//delete();
 
 		//treeView.AppendColumn("ID", new CellRendererText(), "text", 0);
 		//treeView.AppendColumn("Nombre", new CellRendererText(), "text", 1);
@@ -48,23 +52,22 @@ public partial class MainWindow : Gtk.Window
 		string[] properties = new string[] { "Id", "Nombre" };
 
 		foreach(string property in properties) {
-			string propertyName = property;
 			treeView.AppendColumn(
-			propertyName,
-            cellRendererText,
-            delegate (TreeViewColumn tree_column, CellRenderer cell, TreeModel tree_model, TreeIter iter) {
-                //Categoria categoria = (Categoria)tree_model.GetValue(iter, 0);
-                //cellRendererText.Text = categoria.Id + "";
-                object model = tree_model.GetValue(iter, 0);
-				object value = model.GetType().GetProperty(propertyName).GetValue(model);
-                cellRendererText.Text = value + "";
-            }
+			    property,
+                cellRendererText,
+                delegate (TreeViewColumn tree_column, CellRenderer cell, TreeModel tree_model, TreeIter iter) {
+                    //Categoria categoria = (Categoria)tree_model.GetValue(iter, 0);
+                    //cellRendererText.Text = categoria.Id + "";
+                    object model = tree_model.GetValue(iter, 0);
+				    object value = model.GetType().GetProperty(property).GetValue(model);
+                    cellRendererText.Text = value + "";
+                }
             );
 		}
 
 		//ListStore listStore = new ListStore(typeof(ulong), typeof(string)); //Ejemplo ulong
-		//ListStore listStore = new ListStore(typeof(string), typeof(string));// ToString en dataReader
-		//ListStore listStore = new ListStore(typeof(Categoria)); //Sin using CCategoria habría que poner CCategoria.Categoria
+		//ListStore listStore = new ListStore(typeof(string), typeof(string));//ToString en dataReader
+		//ListStore listStore = new ListStore(typeof(Categoria)); //Sin "Using CCategoria" habría que poner CCategoria.Categoria
 		ListStore listStore = new ListStore(typeof(object));
 		treeView.Model = listStore;
 
@@ -83,8 +86,42 @@ public partial class MainWindow : Gtk.Window
 		dbConnection.Close();
     }
 
-    protected void OnDeleteEvent(object sender, DeleteEventArgs a)
-    {
+	private void insert() {
+		IDbCommand dbCommand = dbConnection.CreateCommand();
+		dbCommand.CommandText = "insert into categoria (nombre) values ('categoria 4')";
+		dbCommand.ExecuteNonQuery();
+	}
+
+	private void update() {
+		IDbCommand dbCommand = dbConnection.CreateCommand();
+		dbCommand.CommandText = "update categoria set nombre='categoria 4 modificada' where id=4";
+		dbCommand.ExecuteNonQuery();
+	}
+
+	private void update(Categoria categoria) {
+        IDbCommand dbCommand = dbConnection.CreateCommand();
+		dbCommand.CommandText = "update categoria set nombre=@nombre where id=@id"; //formateo de parámetros
+
+		IDbDataParameter dbDataParameterNombre = dbCommand.CreateParameter();
+		dbDataParameterNombre.ParameterName = "nombre";
+		dbDataParameterNombre.Value = categoria.Nombre;
+		dbCommand.Parameters.Add(dbDataParameterNombre);
+
+		IDbDataParameter dbDataParameterId = dbCommand.CreateParameter();
+        dbDataParameterId.ParameterName = "id";
+        dbDataParameterId.Value = categoria.Id;
+        dbCommand.Parameters.Add(dbDataParameterId);
+
+        dbCommand.ExecuteNonQuery();
+    }
+
+	private void delete() {
+        IDbCommand dbCommand = dbConnection.CreateCommand();
+        dbCommand.CommandText = "delete from categoria where id=4";
+        dbCommand.ExecuteNonQuery();
+    }
+
+    protected void OnDeleteEvent(object sender, DeleteEventArgs a) {
         Application.Quit();
         a.RetVal = true;
     }
