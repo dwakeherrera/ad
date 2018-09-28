@@ -22,7 +22,6 @@ public partial class MainWindow
 		this.UIManager = new global::Gtk.UIManager();
 		global::Gtk.ActionGroup w1 = new global::Gtk.ActionGroup("Default");
 		this.newAction = new global::Gtk.Action("newAction", null, null, "gtk-new");
-		this.newAction.ShortLabel = "";
 		w1.Add(this.newAction, null);
 		this.UIManager.InsertActionGroup(w1, 0);
 		this.AddAccelGroup(this.UIManager.AccelGroup);
