@@ -4,6 +4,7 @@ using MySql.Data.MySqlClient;
 using System.Data;
 
 using CCategoria;
+using Serpis.Ad;
 
 using System.Reflection;
 
