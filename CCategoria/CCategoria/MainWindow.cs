@@ -17,23 +17,18 @@ public partial class MainWindow : Gtk.Window {
                 "server=localhost;database=dbprueba;user=root;password=sistemas;ssl-mode=none"
             );
 
-		new CategoriaWindow();
+		//new CategoriaWindow();
 
-		App.Instance.DbConnection = new MySqlConnection(
-                "server=localhost;database=dbprueba;user=root;password=sistemas;ssl-mode=none"
-            );
 		App.Instance.DbConnection.Open();
 
 		//insert();
 		//update();
-		update(new Categoria(3, "categoria 3 " + DateTime.Now));
+		//update(new Categoria(3, "categoria 3 " + DateTime.Now));
 		//delete();
 
-		//TreeViewHelper.Fill(treeView, propertyNames, CategoriaDao.List);
+		TreeViewHelper.Fill(treeView, new string[] {"Id", "Nombre"}, CategoriaDao.Categorias);
 
-		//treeView.AppendColumn("ID", new CellRendererText(), "text", 0);
-		//treeView.AppendColumn("Nombre", new CellRendererText(), "text", 1);
-		CellRendererText cellRendererText = new CellRendererText();
+		//CellRendererText cellRendererText = new CellRendererText();
 		//treeView.AppendColumn(
 		//	"ID",
 		//	cellRendererText,
@@ -58,27 +53,27 @@ public partial class MainWindow : Gtk.Window {
 		//	}
 		//);
 
-		string[] properties = new string[] { "Id", "Nombre" };
+		//string[] properties = new string[] { "Id", "Nombre" };
 
-		foreach(string property in properties) {
-			treeView.AppendColumn(
-			    property,
-                cellRendererText,
-                delegate (TreeViewColumn tree_column, CellRenderer cell, TreeModel tree_model, TreeIter iter) {
-                    //Categoria categoria = (Categoria)tree_model.GetValue(iter, 0);
-                    //cellRendererText.Text = categoria.Id + "";
-                    object model = tree_model.GetValue(iter, 0);
-				    object value = model.GetType().GetProperty(property).GetValue(model);
-                    cellRendererText.Text = value + "";
-                }
-            );
-		}
+		//foreach(string property in properties) {
+		//	treeView.AppendColumn(
+		//	    property,
+  //              cellRendererText,
+  //              delegate (TreeViewColumn tree_column, CellRenderer cell, TreeModel tree_model, TreeIter iter) {
+  //                  //Categoria categoria = (Categoria)tree_model.GetValue(iter, 0);
+  //                  //cellRendererText.Text = categoria.Id + "";
+  //                  object model = tree_model.GetValue(iter, 0);
+		//		    object value = model.GetType().GetProperty(property).GetValue(model);
+  //                  cellRendererText.Text = value + "";
+  //              }
+  //          );
+		//}
 
 		//ListStore listStore = new ListStore(typeof(ulong), typeof(string)); //Ejemplo ulong
 		//ListStore listStore = new ListStore(typeof(string), typeof(string));//ToString en dataReader
 		//ListStore listStore = new ListStore(typeof(Categoria)); //Sin "Using CCategoria" habría que poner CCategoria.Categoria
-		ListStore listStore = new ListStore(typeof(object));
-		treeView.Model = listStore;
+		//ListStore listStore = new ListStore(typeof(object));
+		//treeView.Model = listStore;
 
 		//IDbCommand dbCommand = App.Instance.DbConnection.CreateCommand();
 		//      dbCommand.CommandText = "select id, nombre from categoria order by id";
@@ -89,8 +84,8 @@ public partial class MainWindow : Gtk.Window {
 
 		//dataReader.Close();
 
-		foreach (Categoria categoria in CategoriaDao.Categorias)
-			listStore.AppendValues(categoria);      
+		//foreach (Categoria categoria in CategoriaDao.Categorias)
+			//listStore.AppendValues(categoria);      
     }
 
 	private void insert() {
