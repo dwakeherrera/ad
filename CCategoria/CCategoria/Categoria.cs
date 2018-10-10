@@ -4,9 +4,11 @@ namespace CCategoria
     public class Categoria
     {
 		private ulong id;
-		private string nombre;
-        public Categoria() {
+		private string nombre = "";
+        
+		public Categoria() {
         }
+
 		public Categoria(ulong id, string nombre) {
 			this.id = id;
 			this.nombre = nombre;
