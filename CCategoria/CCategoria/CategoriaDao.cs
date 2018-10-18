@@ -53,7 +53,15 @@ namespace CCategoria {
 			dbCommand.CommandText = updateSql;
             DbCommandHelper.AddParameter(dbCommand, "nombre", categoria.Nombre);
 			DbCommandHelper.AddParameter(dbCommand, "id", categoria.Id);
-			dbCommand.ExecuteNonQuery();
+			dbCommand.ExecuteNonQuery();         
         }
+
+		private static string deleteSql = "delete from categoria where id = @id";
+		public static void Delete(object id) {
+			IDbCommand dbCommand = App.Instance.DbConnection.CreateCommand();
+			dbCommand.CommandText = deleteSql;
+            DbCommandHelper.AddParameter(dbCommand, "id", id);
+            dbCommand.ExecuteNonQuery();  
+		}
     }
 }
