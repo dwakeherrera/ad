@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 
-using Serpis.Ad;
-
-namespace CCategoria {
+namespace Serpis.Ad.Ventas {
     public class CategoriaDao {
 		private static string selectAll = "select id, nombre from categoria order by id";
 		public static IList<Categoria> Categorias {

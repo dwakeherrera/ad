@@ -1,8 +1,7 @@
 ﻿using System;
-namespace CCategoria
-{
-    public class Categoria
-    {
+
+namespace Serpis.Ad.Ventas {
+    public class Categoria {
 		private ulong id;
 		private string nombre = "";
         
@@ -22,7 +21,6 @@ namespace CCategoria
 		public string Nombre {
 			get { return nombre; }
 			set { nombre = value; }
-		}
-
+		}      
     }
 }

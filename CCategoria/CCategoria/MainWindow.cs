@@ -1,12 +1,9 @@
 ﻿using System;
 using Gtk;
-using MySql.Data.MySqlClient;
-using System.Data;
 
 using CCategoria;
 using Serpis.Ad;
-
-using System.Reflection;
+using Serpis.Ad.Ventas;
 
 public partial class MainWindow : Gtk.Window {
 	public MainWindow() : base(Gtk.WindowType.Toplevel) {
