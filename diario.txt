@@ -35,3 +35,6 @@ git config --global push.default simple
   The host localhost does not support SSL connections.
  Para arreglar esto incluimos ssl-modle=none en la 'connection String':
   "server=localhost;database=dbprueba;user=root;password=sistemas;ssl-mode=none"
+
+2018-10-30
+ crear tabla articulo mediante ddl (está en el archivo dbprueba.sql)
