@@ -4,16 +4,13 @@ using System.Collections.Generic;
 using System.Data;
 using System.Reflection;
 
-namespace Serpis.Ad
-{
-	public class EntityDao<TEntity>
-	{
+namespace Serpis.Ad {
+	public class EntityDao<TEntity> {
 		protected string idPropertyName = "Id";
 		protected Type entityType = typeof(TEntity);
 		protected List<string> entityPropertyNames = new List<string>();
 
-		public EntityDao()
-		{
+		public EntityDao() {
 			foreach (PropertyInfo propertyInfo in entityType.GetProperties())
 				if (propertyInfo.Name == idPropertyName)
 					entityPropertyNames.Insert(0, idPropertyName);
@@ -21,10 +18,8 @@ namespace Serpis.Ad
 					entityPropertyNames.Add(propertyInfo.Name);
 		}
 
-		public IEnumerable Enumerable
-		{
-			get
-			{
+		public IEnumerable Enumerable {
+			get {
 				ArrayList list = new ArrayList();
 				IDbCommand dbCommand = App.Instance.DbConnection.CreateCommand();
 				string tableName = entityType.Name.ToLower();
@@ -35,31 +30,42 @@ namespace Serpis.Ad
 				);
 				dbCommand.CommandText = selectSql;
 				IDataReader dataReader = dbCommand.ExecuteReader();
-				while (dataReader.Read())
-				{
-					object model = Activator.CreateInstance<TEntity>();
-					foreach (string propertyName in entityPropertyNames)
-					{
+				while (dataReader.Read()) {
+					object entity = Activator.CreateInstance<TEntity>();
+					foreach (string propertyName in entityPropertyNames) {
 						object value = dataReader[propertyName.ToLower()];
 						if (value == DBNull.Value)
 							value = null;
-						entityType.GetProperty(propertyName).SetValue(model, value);
+						entityType.GetProperty(propertyName).SetValue(entity, value);
 					}
-					list.Add(model);
+					list.Add(entity);
 				}
 				dataReader.Close();
 				return list;
 			}
 		}
-
-		public TEntity Load(object id)
-		{
+        
+		protected string selectSql = "select * from {0} where {1} = @id";      
+		public TEntity Load(object id) {
+			IDbCommand dbCommand = App.Instance.DbConnection.CreateCommand();
+			string tableName = entityType.Name.ToLower();
+			dbCommand.CommandText = string.Format(selectSql, tableName, idPropertyName.ToLower());
+			DbCommandHelper.AddParameter(dbCommand, "id", id);
+            IDataReader dataReader = dbCommand.ExecuteReader();
+            dataReader.Read();
+			TEntity entity = Activator.CreateInstance<TEntity>();
+			foreach (string propertyName in entityPropertyNames) {
+                object value = dataReader[propertyName.ToLower()];
+                if (value == DBNull.Value)
+                    value = null;
+                entityType.GetProperty(propertyName).SetValue(entity, value);
+            }
+			dataReader.Close();
 			//TODO implementar
 			return default(TEntity);
 		}
 
-		public void Save(TEntity entity)
-		{
+		public void Save(TEntity entity) {
 			object id = entityType.GetProperty(idPropertyName).GetValue(entity);
 			object defaultId = Activator.CreateInstance(entityType.GetProperty(idPropertyName).PropertyType);
 			if (id.Equals(defaultId))// Id == 0
@@ -68,20 +74,17 @@ namespace Serpis.Ad
 				update(entity);
 		}
 
-		protected void insert(TEntity entity)
-		{
+		protected void insert(TEntity entity) {
 			//TODO implementar
 		}
 
-		protected void update(TEntity entity)
-		{
+		protected void update(TEntity entity) {
 			//TODO implementar
 		}
 
 		protected static string deleteSql = "delete from {0} where {1} = @id";
 
-		public void Delete(object id)
-		{
+		public void Delete(object id) {
 			string tableName = entityType.Name.ToLower();
 
 			IDbCommand dbCommand = App.Instance.DbConnection.CreateCommand();
