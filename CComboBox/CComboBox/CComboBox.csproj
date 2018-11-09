@@ -3,10 +3,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <ProjectGuid>{D03CD53A-849B-466F-B828-5696A37251ED}</ProjectGuid>
+    <ProjectGuid>{211CD502-428A-40FE-A140-4BB881057923}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>CArticulo</RootNamespace>
-    <AssemblyName>CArticulo</AssemblyName>
+    <RootNamespace>CComboBox</RootNamespace>
+    <AssemblyName>CComboBox</AssemblyName>
     <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
@@ -52,22 +52,6 @@
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="Mono.Posix" />
-    <Reference Include="CVentas">
-      <HintPath>..\..\CVentas\CVentas\bin\Debug\CVentas.dll</HintPath>
-    </Reference>
-    <Reference Include="CSerpisGtk">
-      <HintPath>..\..\CSerpisGtk\CSerpisGtk\bin\Debug\CSerpisGtk.dll</HintPath>
-    </Reference>
-    <Reference Include="CSerpis">
-      <HintPath>..\..\CSerpis\CSerpis\bin\Debug\CSerpis.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Data" />
-    <Reference Include="MySql.Data">
-      <HintPath>..\..\mysql\MySql.Data.dll</HintPath>
-    </Reference>
-    <Reference Include="CVentas">
-      <HintPath>..\..\CVentas\CVentas\bin\Debug\CVentas.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="gtk-gui\gui.stetic">
@@ -80,9 +64,6 @@
     <Compile Include="gtk-gui\MainWindow.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ArticuloWindow.cs" />
-    <Compile Include="gtk-gui\CArticulo.ArticuloWindow.cs" />
-    <Compile Include="Articulo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

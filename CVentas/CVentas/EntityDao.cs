@@ -28,10 +28,10 @@ namespace Serpis.Ad
 				ArrayList list = new ArrayList();
 				IDbCommand dbCommand = App.Instance.DbConnection.CreateCommand();
 				string tableName = entityType.Name.ToLower();
-				string fieldNameCsv = string.Join(", ", entityPropertyNames).ToLower();
+				string fieldNamesCsv = string.Join(", ", entityPropertyNames).ToLower();
 				string selectSql = string.Format(
 					"select {0} from {1} order by {2}",
-					fieldNameCsv, tableName, idPropertyName.ToLower()
+					fieldNamesCsv, tableName, idPropertyName.ToLower()
 				);
 				dbCommand.CommandText = selectSql;
 				IDataReader dataReader = dbCommand.ExecuteReader();
@@ -62,20 +62,20 @@ namespace Serpis.Ad
 		{
 			object id = entityType.GetProperty(idPropertyName).GetValue(entity);
 			object defaultId = Activator.CreateInstance(entityType.GetProperty(idPropertyName).PropertyType);
-			if (id.Equals(defaultId)) // Id = 0
+			if (id.Equals(defaultId))// Id == 0
 				insert(entity);
 			else
 				update(entity);
 		}
 
-		public void insert(TEntity entity)
+		protected void insert(TEntity entity)
 		{
-
+			//TODO implementar
 		}
 
-		public void update(TEntity entity)
+		protected void update(TEntity entity)
 		{
-
+			//TODO implementar
 		}
 
 		protected static string deleteSql = "delete from {0} where {1} = @id";
@@ -88,6 +88,7 @@ namespace Serpis.Ad
 			dbCommand.CommandText = string.Format(deleteSql, tableName, idPropertyName.ToLower());
 			DbCommandHelper.AddParameter(dbCommand, "id", id);
 			dbCommand.ExecuteNonQuery();
+
 		}
 	}
 }
