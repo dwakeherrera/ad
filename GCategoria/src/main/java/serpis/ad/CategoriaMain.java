@@ -1,17 +1,19 @@
 package serpis.ad;
 
-import java.util.Scanner;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 public class CategoriaMain {
-	private static Scanner scanner = new Scanner(System.in);
-	
-	private static boolean exit = false;
-	public static void main(String[] args) {
-		Menu.create("Menú Categoría")
-		.add("\t1 - Nuevo", CategoriaMain::nuevo)
-		.add("\t2 - Editar", CategoriaMain::editar)
-		.exitWhen("\t0 - Salir")
-		.loop();		
+	public static void main(String[] args) throws SQLException {
+		App.getInstance().setConnection(
+				DriverManager.getConnection("jdbc:mysql://localhost/dbprueba", "root", "sistemas")
+			);
+			Menu.create("Menú Categoría")
+			.add("\t1 - Nuevo", CategoriaMain::nuevo)
+			.add("\t2 - Editar", CategoriaMain::editar)
+			.exitWhen("\t0 - Salir")
+			.loop();		
+			App.getInstance().getConnection().close();
 	}
 	
 	public static void nuevo() {
