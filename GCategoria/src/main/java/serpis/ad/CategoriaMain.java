@@ -1,27 +1,78 @@
 package serpis.ad;
 
+import java.util.List;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class CategoriaMain {
+	
+	@FunctionalInterface
+	interface DaoAction {
+		void execute() throws SQLException;
+	}
+	
 	public static void main(String[] args) throws SQLException {
 		App.getInstance().setConnection(
 				DriverManager.getConnection("jdbc:mysql://localhost/dbprueba", "root", "sistemas")
 			);
 			Menu.create("Menú Categoría")
-			.add("\t1 - Nuevo", CategoriaMain::nuevo)
-			.add("\t2 - Editar", CategoriaMain::editar)
+			.add("\t1 - Nuevo", () -> tryAction(CategoriaMain::nuevo, "No se ha podido insertar."))
+			.add("\t2 - Editar", () -> tryAction(CategoriaMain::editar, "No se ha podido modificar."))
+			.add("\t3 - Eliminar", () -> tryAction(CategoriaMain::eliminar, "No se ha podido eliminar."))
+			.add("\t4 - Consultar", () -> tryAction(CategoriaMain::consultar, "No se ha podido realizar la consulta."))
+			.add("\t5 - Listar", () -> tryAction(CategoriaMain::listar, "No se ha podido realizar la consulta."))
 			.exitWhen("\t0 - Salir")
 			.loop();		
 			App.getInstance().getConnection().close();
 	}
 	
-	public static void nuevo() {
-		System.out.println("Método nuevo");
+	public static void tryAction(DaoAction daoAction, String errorMessage) {
+		try {
+			daoAction.execute();
+		} catch (SQLException ex) {
+			System.out.println(errorMessage);
+		}
 	}
 	
-	public static void editar() {
-		System.out.println("Método editar");
-		int id = ScannerHelper.getInt("Id: ");
+	public static void nuevo() {
+		Categoria categoria = new Categoria();
+		CategoriaConsole.newCategoria(categoria);
+		
+		try {
+			CategoriaDao.save(categoria);
+		} catch (SQLException e) {
+			
+		}
+	}
+	
+	public static void editar() throws SQLException {
+		long id = CategoriaConsole.getId();
+		Categoria categoria = CategoriaDao.load(id);
+		if (categoria == null) {
+			CategoriaConsole.idNotExists();
+			return;
+		}
+		CategoriaConsole.editCategoria(categoria);
+		CategoriaDao.save(categoria);
+	}
+	
+	public static void eliminar() throws SQLException {
+		long id = CategoriaConsole.getId();
+		if (CategoriaConsole.deleteConfirm())
+			CategoriaDao.delete(id);
+	}
+	
+	public static void consultar() throws SQLException {
+		long id = CategoriaConsole.getId();
+		Categoria categoria = CategoriaDao.load(id);
+		if (categoria == null) {
+			CategoriaConsole.idNotExists();
+			return;
+		}
+	}
+	
+	public static void listar() throws SQLException {
+		List<Categoria> categorias = CategoriaDao.getAll();
+		CategoriaConsole.showList(categorias);
 	}
 }
