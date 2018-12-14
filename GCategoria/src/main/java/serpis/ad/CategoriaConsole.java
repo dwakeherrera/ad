@@ -5,7 +5,7 @@ import java.util.List;
 public class CategoriaConsole {
 	
 	public static long getId() {
-		return -1;
+		return ScannerHelper.getInt("Elige Id: ");
 	}
 	
 	public static void newCategoria(Categoria categoria) {
@@ -21,16 +21,15 @@ public class CategoriaConsole {
 	}
 	
 	public static boolean deleteConfirm() {
-		return false;
+		return ScannerHelper.getConfirm("¿Estás seguro que quieres eliminar el registro? (s/N)").equalsIgnoreCase("s");
 	}
-	
+
 	public static void show(Categoria categoria) {
-		
+		System.out.printf("%4s %s %n", categoria.getId(), categoria.getNombre());
 	}
 	
 	public static void showList(List<Categoria> categorias) {
-		for (Categoria categoria : categorias) {
+		for (Categoria categoria : categorias)
 			System.out.printf("%4s %s %n", categoria.getId(), categoria.getNombre());
-		}
 	}
 }

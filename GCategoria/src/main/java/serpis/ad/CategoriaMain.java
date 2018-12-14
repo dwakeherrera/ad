@@ -5,12 +5,12 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class CategoriaMain {
-	
+
 	@FunctionalInterface
 	interface DaoAction {
 		void execute() throws SQLException;
 	}
-	
+
 	public static void main(String[] args) throws SQLException {
 		App.getInstance().setConnection(
 				DriverManager.getConnection("jdbc:mysql://localhost/dbprueba", "root", "sistemas")
@@ -25,7 +25,7 @@ public class CategoriaMain {
 			.loop();		
 			App.getInstance().getConnection().close();
 	}
-	
+
 	public static void tryAction(DaoAction daoAction, String errorMessage) {
 		try {
 			daoAction.execute();
@@ -33,18 +33,18 @@ public class CategoriaMain {
 			System.out.println(errorMessage);
 		}
 	}
-	
+
 	public static void nuevo() {
 		Categoria categoria = new Categoria();
 		CategoriaConsole.newCategoria(categoria);
-		
+
 		try {
 			CategoriaDao.save(categoria);
 		} catch (SQLException e) {
 			
 		}
 	}
-	
+
 	public static void editar() throws SQLException {
 		long id = CategoriaConsole.getId();
 		Categoria categoria = CategoriaDao.load(id);
@@ -55,13 +55,13 @@ public class CategoriaMain {
 		CategoriaConsole.editCategoria(categoria);
 		CategoriaDao.save(categoria);
 	}
-	
+
 	public static void eliminar() throws SQLException {
 		long id = CategoriaConsole.getId();
 		if (CategoriaConsole.deleteConfirm())
 			CategoriaDao.delete(id);
 	}
-	
+
 	public static void consultar() throws SQLException {
 		long id = CategoriaConsole.getId();
 		Categoria categoria = CategoriaDao.load(id);
@@ -69,8 +69,9 @@ public class CategoriaMain {
 			CategoriaConsole.idNotExists();
 			return;
 		}
+		CategoriaConsole.show(categoria);
 	}
-	
+
 	public static void listar() throws SQLException {
 		List<Categoria> categorias = CategoriaDao.getAll();
 		CategoriaConsole.showList(categorias);
