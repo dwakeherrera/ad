@@ -11,14 +11,28 @@ import java.util.List;
 public class CategoriaDao {
 	
 	private static String insertSql = "insert into categoria (nombre) values (?)";
-	public static int insert(Categoria categoria) throws SQLException {
+	private static int insert(Categoria categoria) throws SQLException {
+		try (PreparedStatement preparedStatement = App.getInstance().getConnection().prepareStatement(insertSql)) {
+			preparedStatement.setObject(1, categoria.getNombre());
+			return preparedStatement.executeUpdate();
+		}
+	}
+	/*private static int insert(Categoria categoria) throws SQLException {
 		PreparedStatement preparedStatement = App.getInstance().getConnection().prepareStatement(insertSql);
 		preparedStatement.setObject(1, categoria.getNombre());
-		return preparedStatement.executeUpdate();
-	}
-	
+		int rowCount = preparedStatement.executeUpdate();
+		preparedStatement.close();
+		return rowCount;
+	}*/
+
+	private static String updateSql = "update categoria set nombre = ? where id = ?";
 	private static int update(Categoria categoria) throws SQLException {
-		return -1; //TODO implementar
+		PreparedStatement preparedStatement = App.getInstance().getConnection().prepareStatement(updateSql);
+		preparedStatement.setObject(1, categoria.getNombre());
+		preparedStatement.setObject(2, categoria.getId());
+		int rowCount = preparedStatement.executeUpdate();
+		preparedStatement.close();
+		return rowCount;
 	}
 
 	
@@ -37,13 +51,13 @@ public class CategoriaDao {
 			return update(categoria);
 	}
 
+	private static final String selectWhereId = "select id, nombre from categoria where id = ?";
 	/**
 	 * Lee de la base de datos la categoria con el id indicado
 	 * @param id
 	 * @return categoria con ese id o null si no existe
 	 * @throws SQLException
 	 */
-	private static final String selectWhereId = "select id, nombre from categoria where id = ?";
 	public static Categoria load(long id) throws SQLException {
 		PreparedStatement preparedStatement = App.getInstance().getConnection().prepareStatement(selectWhereId);
 		preparedStatement.setObject(1, id);
@@ -61,9 +75,10 @@ public class CategoriaDao {
 
 	private static final String deleteSql = "delete from categoria where id = ?";
 	public static int delete(long id) throws SQLException {
-		PreparedStatement preparedStatement = App.getInstance().getConnection().prepareStatement(deleteSql);
-		preparedStatement.setObject(1, id);
-		return preparedStatement.executeUpdate();
+		try (PreparedStatement preparedStatement = App.getInstance().getConnection().prepareStatement(deleteSql)) {
+			preparedStatement.setObject(1, id);
+			return preparedStatement.executeUpdate();
+		}
 	}
 
 	private static final String selectAll = "select id, nombre from categoria";
@@ -82,14 +97,3 @@ public class CategoriaDao {
 		return categorias;
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
