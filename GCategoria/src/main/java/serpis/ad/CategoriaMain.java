@@ -34,22 +34,17 @@ public class CategoriaMain {
 		}
 	}
 
-	public static void nuevo() {
+	public static void nuevo() throws SQLException {
 		Categoria categoria = new Categoria();
 		CategoriaConsole.newCategoria(categoria);
-
-		try {
-			CategoriaDao.save(categoria);
-		} catch (SQLException e) {
-			
-		}
+		CategoriaDao.save(categoria);
 	}
 
 	public static void editar() throws SQLException {
 		long id = CategoriaConsole.getId();
 		Categoria categoria = CategoriaDao.load(id);
 		if (categoria == null) {
-			CategoriaConsole.idNotExists();
+			CategoriaConsole.showIdNotExists();
 			return;
 		}
 		CategoriaConsole.editCategoria(categoria);
@@ -66,7 +61,7 @@ public class CategoriaMain {
 		long id = CategoriaConsole.getId();
 		Categoria categoria = CategoriaDao.load(id);
 		if (categoria == null) {
-			CategoriaConsole.idNotExists();
+			CategoriaConsole.showIdNotExists();
 			return;
 		}
 		CategoriaConsole.show(categoria);

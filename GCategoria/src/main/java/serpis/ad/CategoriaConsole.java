@@ -1,27 +1,37 @@
 package serpis.ad;
 
 import java.util.List;
+import java.util.Scanner;
 
 public class CategoriaConsole {
+	private static Scanner scanner = new Scanner(System.in);
 	
 	public static long getId() {
-		return ScannerHelper.getInt("Elige Id: ");
+		return ScannerHelper.getInt("Id: ");
 	}
 	
 	public static void newCategoria(Categoria categoria) {
-		
+		System.out.print("Nombre: ");
+		String nombre = scanner.nextLine();
+		categoria.setNombre(nombre);
 	}
 	
 	public static void editCategoria(Categoria categoria) {
-		
+		show(categoria);
+		System.out.print("Nombre: ");
+		String nombre = scanner.nextLine();
+		categoria.setNombre(nombre);
 	}
 	
-	public static void idNotExists() {
-		
+	public static void showIdNotExists() {
+		System.out.println("Ese id no existe.");
 	}
-	
+
 	public static boolean deleteConfirm() {
-		return ScannerHelper.getConfirm("¿Estás seguro que quieres eliminar el registro? (s/N)").equalsIgnoreCase("s");
+		System.out.print("¿Quieres eliminar el registro [S/N] ? ");
+		String response = scanner.nextLine();
+		return response.equalsIgnoreCase("S");
+		//return ScannerHelper.getConfirm("¿Estás seguro que quieres eliminar el registro? (s/N)").equalsIgnoreCase("s");
 	}
 
 	public static void show(Categoria categoria) {
@@ -30,6 +40,6 @@ public class CategoriaConsole {
 	
 	public static void showList(List<Categoria> categorias) {
 		for (Categoria categoria : categorias)
-			System.out.printf("%4s %s %n", categoria.getId(), categoria.getNombre());
+			System.out.printf("%4s %-20s %n", categoria.getId(), categoria.getNombre());
 	}
 }

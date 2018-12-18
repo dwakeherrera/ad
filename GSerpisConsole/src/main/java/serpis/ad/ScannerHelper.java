@@ -30,12 +30,12 @@ public class ScannerHelper {
 		}
 	}
 
-	public static String getConfirm(String label) {
+	/*public static String getConfirm(String label) {
 		while (true) {
 			System.out.println(label);
 			String confirmQuery = scanner.nextLine();
 			
 			return confirmQuery;
 		}
-	}
+	}*/
 }
