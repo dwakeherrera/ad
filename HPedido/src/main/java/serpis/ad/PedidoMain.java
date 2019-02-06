@@ -13,12 +13,13 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 public class PedidoMain {
+
 	private static EntityManagerFactory entityManagerFactory;
 
-
 	public static void main(String[] args) {
-		App.getInstance().setEntityManagerFactory(entityManagerFactory);
-		
+
+		App.getInstance().setEntityManagerFactory(entityManagerFactory);;
+
 		entityManagerFactory = Persistence.createEntityManagerFactory("serpis.ad.hmysql");
 
 		EntityManager entityManager = entityManagerFactory.createEntityManager();
@@ -27,58 +28,96 @@ public class PedidoMain {
 		List<Categoria> categorias =
 				entityManager.createQuery("select c from Categoria c", Categoria.class).getResultList();
 
-		Articulo articulo = newArticulo();
-		articulo.setCategoria(categorias.get(new Random().nextInt(categorias.size()) ));
+		Articulo articulo4 = JpaHelper.execute(entityManager -> {
+			return entityManager.find(Articulo.class, 4L);
+		});
 
-		//entityManager.persist(articulo);
+		Articulo articulo = insert();
+		articulo.setCategoria(categorias.get(new Random().nextInt(categorias.size()) ));
+		entityManager.persist(articulo);
 
 		show(articulo);
+		//actualizarArticulo();
 
 		entityManager.getTransaction().commit();
 		entityManager.close();
 
-		System.out.print("Añadido artículo. Pulsa Enter para seguir...");
+		System.out.println("Añadido articulo. Pulsa Enter para seguir...");
 		new Scanner(System.in).nextLine();
 
 		//remove(articulo);
 
-		/*doInJPA(entityManagerFactory, entityManager2 -> {
-			Articulo articulo2 = entityManager2.getReference(Articulo.class, articulo.getId());
-			entityManager2.remove(articulo2);
-		});*/
-
-		/*Articulo articulo10 = doInJPA(entityManagerFactory, entityManager2 -> {
-			return entityManager2.find(Articulo.class, 10L);
-		});
-
-		show(articulo10);*/
 
 		entityManagerFactory.close();
+
 	}
 
-	private static Articulo newArticulo() {
+
+	private static void show(Articulo articulo) {
+		System.out.printf("%4s %-30s %-30s %s %n ", articulo.getId(), 
+				articulo.getNombre(), articulo.getCategoria(), articulo.getPrecio());
+	}
+
+
+	private static Articulo insert() {
 		Articulo articulo = new Articulo();
 		articulo.setNombre("nuevo " + LocalDateTime.now());
 		articulo.setPrecio(new BigDecimal(1.5));
 		return articulo;
+
 	}
+
 
 	private static void remove(Articulo articulo) {
 		EntityManager entityManager = entityManagerFactory.createEntityManager();
 		entityManager.getTransaction().begin();
 
+
 		//articulo = entityManager.find(Articulo.class, articulo.getId());
 		articulo = entityManager.getReference(Articulo.class, articulo.getId());
 		entityManager.remove(articulo);
 
+
 		entityManager.getTransaction().commit();
 		entityManager.close();
-		
+
 	}
 
-	private static void show(Articulo articulo) {
-		System.out.printf("%4s %-30s %-30s %s %n", 
-				articulo.getId(), articulo.getNombre(), articulo.getCategoria(), articulo.getPrecio());
+	public static void updateArticulo() {
+		EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("serpis.ad.hmysql");
+		EntityManager entityManager = entityManagerFactory.createEntityManager();
+		entityManager.getTransaction().begin();
+
+		Articulo articulo = new Articulo();
+		articulo.setId((long) 1);
+		articulo = entityManager.find(Articulo.class, articulo.getId());
+
+		articulo.setId((long)4);
+		entityManager.getTransaction().commit();
+		entityManager.close();
+
+		entityManagerFactory.close();
 	}
+
+	/*public static void doInJPA(EntityManagerFactory entityManagerFactory, Consumer<EntityManager> consumer) {
+		EntityManager entityManager = entityManagerFactory.createEntityManager();
+		entityManager.getTransaction().begin();
+		consumer.accept(entityManager);
+		entityManager.getTransaction().commit();
+		entityManager.close();
+	}*/
+
+	/*public static <R> R doInJPA(EntityManagerFactory entityManagerFactory, Function<EntityManager, R> function) {
+		EntityManager entityManager = entityManagerFactory.createEntityManager();
+		entityManager.getTransaction().begin();
+		R result = function.apply(entityManager);
+		entityManager.getTransaction().commit();
+		entityManager.close();
+		return result;
+	}*/
+	
 
 }
+
+
+
