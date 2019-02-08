@@ -13,111 +13,38 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 public class PedidoMain {
-
-	private static EntityManagerFactory entityManagerFactory;
+	Scanner sc = new Scanner(System.in);
 
 	public static void main(String[] args) {
+		App.getInstance().setEntityManagerFactory(Persistence.createEntityManagerFactory("serpis.ad.hmysql"));
 
-		App.getInstance().setEntityManagerFactory(entityManagerFactory);;
-
-		entityManagerFactory = Persistence.createEntityManagerFactory("serpis.ad.hmysql");
-
-		EntityManager entityManager = entityManagerFactory.createEntityManager();
-		entityManager.getTransaction().begin();
-
-		List<Categoria> categorias =
-				entityManager.createQuery("select c from Categoria c", Categoria.class).getResultList();
-
-		Articulo articulo4 = JpaHelper.execute(entityManager -> {
-			return entityManager.find(Articulo.class, 4L);
+		List<Categoria> categorias = JpaHelper.execute(entityManager -> {
+			return entityManager.createQuery("select c from Categoria c order by Id", Categoria.class).getResultList();
 		});
 
-		Articulo articulo = insert();
-		articulo.setCategoria(categorias.get(new Random().nextInt(categorias.size()) ));
-		entityManager.persist(articulo);
+		for (Categoria categoria : categorias)
+			System.out.printf("%4s %s %n", categoria.getId(), categoria.getNombre());
 
-		show(articulo);
-		//actualizarArticulo();
+		JpaHelper.execute(entityManager -> {
+			Articulo articulo = new Articulo();
+			articulo.setNombre("nuevo " + LocalDateTime.now());
+			articulo.setPrecio(new BigDecimal(1.5));
+			entityManager.persist(articulo);
+		});
 
-		entityManager.getTransaction().commit();
-		entityManager.close();
+		Articulo articulo4 = JpaHelper.execute(entityManager -> {
+			return entityManager.find(Articulo.class, 3L);
+		});
 
-		System.out.println("Añadido articulo. Pulsa Enter para seguir...");
-		new Scanner(System.in).nextLine();
+		show(articulo4);
 
-		//remove(articulo);
-
-
-		entityManagerFactory.close();
-
-	}
-
-
-	private static void show(Articulo articulo) {
-		System.out.printf("%4s %-30s %-30s %s %n ", articulo.getId(), 
-				articulo.getNombre(), articulo.getCategoria(), articulo.getPrecio());
-	}
-
-
-	private static Articulo insert() {
-		Articulo articulo = new Articulo();
-		articulo.setNombre("nuevo " + LocalDateTime.now());
-		articulo.setPrecio(new BigDecimal(1.5));
-		return articulo;
+		App.getInstance().getEntityManagerFactory().close();
 
 	}
-
-
-	private static void remove(Articulo articulo) {
-		EntityManager entityManager = entityManagerFactory.createEntityManager();
-		entityManager.getTransaction().begin();
-
-
-		//articulo = entityManager.find(Articulo.class, articulo.getId());
-		articulo = entityManager.getReference(Articulo.class, articulo.getId());
-		entityManager.remove(articulo);
-
-
-		entityManager.getTransaction().commit();
-		entityManager.close();
-
-	}
-
-	public static void updateArticulo() {
-		EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("serpis.ad.hmysql");
-		EntityManager entityManager = entityManagerFactory.createEntityManager();
-		entityManager.getTransaction().begin();
-
-		Articulo articulo = new Articulo();
-		articulo.setId((long) 1);
-		articulo = entityManager.find(Articulo.class, articulo.getId());
-
-		articulo.setId((long)4);
-		entityManager.getTransaction().commit();
-		entityManager.close();
-
-		entityManagerFactory.close();
-	}
-
-	/*public static void doInJPA(EntityManagerFactory entityManagerFactory, Consumer<EntityManager> consumer) {
-		EntityManager entityManager = entityManagerFactory.createEntityManager();
-		entityManager.getTransaction().begin();
-		consumer.accept(entityManager);
-		entityManager.getTransaction().commit();
-		entityManager.close();
-	}*/
-
-	/*public static <R> R doInJPA(EntityManagerFactory entityManagerFactory, Function<EntityManager, R> function) {
-		EntityManager entityManager = entityManagerFactory.createEntityManager();
-		entityManager.getTransaction().begin();
-		R result = function.apply(entityManager);
-		entityManager.getTransaction().commit();
-		entityManager.close();
-		return result;
-	}*/
 	
-
+	private static void show (Articulo articulo) {
+		System.out.printf("%4s %-30s %-30s %s %n",
+				articulo.getId(), articulo.getNombre(), articulo.getCategoria(), articulo.getPrecio());
+	}
+	
 }
-
-
-
