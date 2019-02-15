@@ -1,0 +1,7 @@
+ToDo
+
+Qué estudiar tras acabar el curso:
+
+No sql: MongoDB
+
+Firebase

@@ -14,9 +14,15 @@ public class JpaHelper {
 	public static void execute(EntityManagerFactory entityManagerFactory, Consumer<EntityManager> consumer) {
 		EntityManager entityManager = entityManagerFactory.createEntityManager();
 		entityManager.getTransaction().begin();
+		try {
 		consumer.accept(entityManager);
 		entityManager.getTransaction().commit();
-		entityManager.close();
+		} catch (Exception ex) {
+			entityManager.getTransaction().rollback();
+			throw(ex);
+		} finally {
+			entityManager.close();
+		}
 	}
 
 	public static <R> R execute(Function<EntityManager, R> function) {
