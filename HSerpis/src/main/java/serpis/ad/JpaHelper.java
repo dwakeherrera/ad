@@ -18,11 +18,11 @@ public class JpaHelper {
 		entityManager.getTransaction().commit();
 		entityManager.close();
 	}
-	
+
 	public static <R> R execute(Function<EntityManager, R> function) {
 		return execute(App.getInstance().getEntityManagerFactory(), function);
 	}
-	
+
 	public static <R> R execute(EntityManagerFactory entityManagerFactory, Function<EntityManager, R> function) {
 		EntityManager entityManager = entityManagerFactory.createEntityManager();
 		entityManager.getTransaction().begin();
